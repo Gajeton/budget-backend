@@ -1,0 +1,94 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+
+}
+
+model User {
+  id    Int     @id @default(autoincrement())
+  idAuth0 String  @unique
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  name  String?
+  travel Travel[]
+  destination Destination[]
+  categoryIncome CategoryIncome[]
+  categoryExpense CategoryExpense[]
+}
+
+model Travel {
+  id       Int  @id @default(autoincrement())
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  destination TravelDestination[]
+  creator   User @relation(fields: [creatorId], references: [id])
+  creatorId Int
+  entry Entry[]
+  month Int
+  week Int
+  day Int
+}
+
+model CategoryIncome {
+  id       Int  @id @default(autoincrement())
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  title String
+  creator   User @relation(fields: [creatorId], references: [id])
+  creatorId Int
+  entry Entry[]
+}
+
+model CategoryExpense {
+  id       Int  @id @default(autoincrement())
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  title String
+  creator   User @relation(fields: [creatorId], references: [id])
+  creatorId Int
+  entry Entry[]
+}
+
+model Destination {
+  id       Int  @id @default(autoincrement())
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  creator   User @relation(fields: [creatorId], references: [id])
+  creatorId Int
+  title String
+  travel TravelDestination[]
+}
+
+model TravelDestination {
+  travel       Travel     @relation(fields: [travelId], references: [id])
+  travelId     Int // relation scalar field (used in the `@relation` attribute above)
+  destination   Destination @relation(fields: [destinationId], references: [id])
+  destinationId Int // relation scalar field (used in the `@relation` attribute above)
+  assignedAt DateTime @default(now())
+  assignedBy String
+
+  @@id([travelId, destinationId])
+}
+
+
+model Entry {
+  id       Int  @id @default(autoincrement())
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  month Int
+  week Int
+  day Int
+  amount   Decimal
+  travel   Travel @relation(fields: [travelId], references: [id])
+  travelId Int
+  categoryExpense  CategoryExpense @relation(fields: [categoryExpenseId], references: [id])
+  categoryExpenseId Int
+  categoryIncome  CategoryIncome @relation(fields: [categoryIncomeId], references: [id])
+  categoryIncomeId Int
+  creatorId Int
+}
