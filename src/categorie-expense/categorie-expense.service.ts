@@ -1,12 +1,12 @@
-import { CategorieExpense } from "@prisma/client";
+import { CategoryExpense } from "@prisma/client";
 import { getUserByAuth0Id } from "../user/user.service";
 
 const prisma = require("../connection");
 
 
-export const getCategorieExpenses = async (idAuth0: string): Promise<CategorieExpense[] | null> => {
+export const getCategoryExpenses = async (idAuth0: string): Promise<CategoryExpense[] | null> => {
   const {id} = await getUserByAuth0Id({idAuth0: idAuth0})
-  return prisma.categorieExpense.findMany({
+  return prisma.categoryExpense.findMany({
     where: {
       creatorId: id,
     },
@@ -17,9 +17,9 @@ export interface CreateCategorieExpenseProps {
   title: string;
 }
 
-export const createCategorieExpense = async ({ title }: CreateCategorieExpenseProps): Promise<CategorieExpense | null> => {
+export const createCategoryExpense = async ({ title }: CreateCategorieExpenseProps): Promise<CategoryExpense | null> => {
   const {id} = await getUserByAuth0Id({idAuth0: 'auth0|64ddc45cda4837390064861d'})
-  return prisma.categorieExpense
+  return prisma.categoryExpense
     .create({
       data: {
         title,
@@ -33,8 +33,8 @@ export const createCategorieExpense = async ({ title }: CreateCategorieExpensePr
     })
 };
 
-export const deleteCategorieExpense = async (idd: number): Promise<CategorieExpense | null> => {
-  return prisma.categorieExpense
+export const deleteCategoryExpense = async (idd: number): Promise<CategoryExpense | null> => {
+  return prisma.categoryExpense
     .delete({
       where: {
         id: idd,

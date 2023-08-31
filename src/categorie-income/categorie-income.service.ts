@@ -3,7 +3,7 @@ import { getUserByAuth0Id } from "../user/user.service";
 
 const prisma = require("../connection");
 
-export const getCategoryIncome = async (idAuth0: string): Promise<CategorieIncome[] | null> => {
+export const getCategoryIncomes = async (idAuth0: string): Promise<CategoryIncome[] | null> => {
   const {id} = await getUserByAuth0Id({idAuth0: idAuth0})
   return prisma.categoryExpense.findMany({
     where: {
@@ -16,7 +16,7 @@ export interface CreateCategorieExpenseProps {
   title: string;
 }
 
-export const createCategoryIncome = async ({ title }: CreateCategorieExpenseProps): Promise<CategorieExpense | null> => {
+export const createCategoryIncome = async ({ title }: CreateCategorieExpenseProps): Promise<CategoryIncome | null> => {
   const {id} = await getUserByAuth0Id({idAuth0: 'auth0|64ddc45cda4837390064861d'})
   return prisma.categoryIncome
     .create({
@@ -32,8 +32,8 @@ export const createCategoryIncome = async ({ title }: CreateCategorieExpenseProp
     })
 };
 
-export const deleteCategoryExpense = async (idd: number): Promise<CategoryIncome | null> => {
-  return prisma.categoryExpense
+export const deleteCategoryIncome = async (idd: number): Promise<CategoryIncome | null> => {
+  return prisma.categoryIncome
     .delete({
       where: {
         id: idd,

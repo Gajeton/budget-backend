@@ -9,7 +9,7 @@ export const CategorieExpenseRouter = express.Router();
 // GET: List of expenses categorie
 CategorieExpenseRouter.get("/getCategorieExpenses/:idAuth0", async (request: Request, response: Response) => {
     try {
-    const categorieExpenses = await CategorieExpenseService.getCategorieExpenses(request.params.idAuth0);
+    const categorieExpenses = await CategorieExpenseService.getCategoryExpenses(request.params.idAuth0);
     return response.status(200).json(categorieExpenses);
   } catch (error: any) {
     return response.status(500).json(error.message);
@@ -19,7 +19,7 @@ CategorieExpenseRouter.get("/getCategorieExpenses/:idAuth0", async (request: Req
 CategorieExpenseRouter.post("/createCategorieExpense", async (request: Request, response: Response) => {
   const { title } = request.body;
   try {
-  const categorieExpenses = await CategorieExpenseService.createCategorieExpense({title : title});
+  const categorieExpenses = await CategorieExpenseService.createCategoryExpense({title : title});
   return response.status(200).json(categorieExpenses);
 } catch (error: any) {
   return response.status(500).json(error.message);
@@ -29,7 +29,7 @@ CategorieExpenseRouter.post("/createCategorieExpense", async (request: Request, 
 CategorieExpenseRouter.delete("/deleteCategorieExpense/:idd", async (request: Request, response: Response) => {
   const id: number = parseInt(request.params.idd, 10);
   try {
-  const categorieExpenses = await CategorieExpenseService.deleteCategorieExpense(id);
+  const categorieExpenses = await CategorieExpenseService.deleteCategoryExpense(id);
   return response.status(200).json(categorieExpenses);
 } catch (error: any) {
   return response.status(500).json(error.message);
