@@ -26,9 +26,12 @@ model Travel {
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
   destination TravelDestination[]
+  currency Int
   creator   User @relation(fields: [creatorId], references: [id])
   creatorId Int
   entry Entry[]
+  startDate  DateTime 
+  endDate  DateTime 
   month Int
   week Int
   day Int
@@ -61,7 +64,7 @@ model Destination {
   creator   User @relation(fields: [creatorId], references: [id])
   creatorId Int
   title String
-  travel TravelDestination[]
+  travelDestination TravelDestination[]
 }
 
 model TravelDestination {
@@ -69,8 +72,7 @@ model TravelDestination {
   travelId     Int // relation scalar field (used in the `@relation` attribute above)
   destination   Destination @relation(fields: [destinationId], references: [id])
   destinationId Int // relation scalar field (used in the `@relation` attribute above)
-  assignedAt DateTime @default(now())
-  assignedBy String
+
 
   @@id([travelId, destinationId])
 }
