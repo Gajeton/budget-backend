@@ -35,3 +35,14 @@ return response.status(200).json(categorieExpenses);
 return response.status(500).json(error.message);
 }
 });
+
+CategoryIncomeRouter.get("/getCategoryIncomeByTravelId/:travelId", async (request: Request, response: Response) => {
+  try {
+  const categorieExpenses = await CategoryIncomeService.getCategoryExpenseByTravelId({travelId : parseInt(request.params.travelId)});
+  return response.status(200).json(categorieExpenses);
+} catch (error: any) {
+  return response.status(500).json(error.message);
+}
+});
+
+

@@ -19,6 +19,16 @@ model User {
   destination Destination[]
   categoryIncome CategoryIncome[]
   categoryExpense CategoryExpense[]
+  entry Entry[]
+}
+
+model Currency {
+  id       Int  @id @default(autoincrement())
+  title String
+  symbol String
+  code String
+  travel Travel[]
+  entry Entry[]
 }
 
 model Travel {
@@ -26,15 +36,19 @@ model Travel {
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
   destination TravelDestination[]
-  currency Int
+  currency Currency @relation(fields: [currencyId], references: [id])
+  currencyId Int
   creator   User @relation(fields: [creatorId], references: [id])
   creatorId Int
+  budget Decimal
   entry Entry[]
   startDate  DateTime 
   endDate  DateTime 
   month Int
   week Int
   day Int
+  travelCategoryExpense TravelCategoryExpense[]
+  travelCategoryIncome TravelCategoryIncome[] 
 }
 
 model CategoryIncome {
@@ -45,6 +59,7 @@ model CategoryIncome {
   creator   User @relation(fields: [creatorId], references: [id])
   creatorId Int
   entry Entry[]
+  travelCategoryIncome TravelCategoryIncome[] 
 }
 
 model CategoryExpense {
@@ -55,6 +70,7 @@ model CategoryExpense {
   creator   User @relation(fields: [creatorId], references: [id])
   creatorId Int
   entry Entry[]
+  travelCategoryExpense TravelCategoryExpense[] 
 }
 
 model Destination {
@@ -72,9 +88,23 @@ model TravelDestination {
   travelId     Int // relation scalar field (used in the `@relation` attribute above)
   destination   Destination @relation(fields: [destinationId], references: [id])
   destinationId Int // relation scalar field (used in the `@relation` attribute above)
-
-
   @@id([travelId, destinationId])
+}
+
+model TravelCategoryExpense {
+  travel       Travel     @relation(fields: [travelId], references: [id])
+  travelId     Int // relation scalar field (used in the `@relation` attribute above)
+  categoryExpense   CategoryExpense @relation(fields: [categoryId], references: [id])
+  categoryId Int // relation scalar field (used in the `@relation` attribute above)
+  @@id([travelId, categoryId])
+}
+
+model TravelCategoryIncome {
+  travel       Travel     @relation(fields: [travelId], references: [id])
+  travelId     Int // relation scalar field (used in the `@relation` attribute above)
+  categoryIncome   CategoryIncome @relation(fields: [categoryId], references: [id])
+  categoryId Int // relation scalar field (used in the `@relation` attribute above)
+  @@id([travelId, categoryId])
 }
 
 
@@ -82,15 +112,16 @@ model Entry {
   id       Int  @id @default(autoincrement())
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
-  month Int
-  week Int
-  day Int
+  date DateTime @default(now())
   amount   Decimal
-  travel   Travel @relation(fields: [travelId], references: [id])
+  currency Currency @relation(fields: [currencyId], references: [id])
+  currencyId Int
+  travel   Travel @relation(fields: [travelId], references: [id]) 
   travelId Int
-  categoryExpense  CategoryExpense @relation(fields: [categoryExpenseId], references: [id])
-  categoryExpenseId Int
-  categoryIncome  CategoryIncome @relation(fields: [categoryIncomeId], references: [id])
-  categoryIncomeId Int
+  categoryExpense  CategoryExpense? @relation(fields: [categoryExpenseId], references: [id])
+  categoryExpenseId Int?
+  categoryIncome  CategoryIncome? @relation(fields: [categoryIncomeId], references: [id])
+  categoryIncomeId Int?
   creatorId Int
+  creator   User @relation(fields: [creatorId], references: [id])
 }

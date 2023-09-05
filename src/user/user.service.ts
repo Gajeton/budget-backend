@@ -1,11 +1,9 @@
 import { User } from "@prisma/client";
+import { UserProps } from "../types/Types";
 
 const prisma = require("../connection");
 
-interface UserProps {
-  idAuth0: string,
-  name?: string
-}
+
 
 export const createUser = async ({ idAuth0, name }: UserProps): Promise<User | null> => {
   return prisma.user

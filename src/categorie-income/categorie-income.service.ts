@@ -1,5 +1,7 @@
-import {  CategoryIncome } from "@prisma/client";
+import { CategoryIncome } from "@prisma/client";
+import { CreateCategoryProps } from "../types/Types";
 import { getUserByAuth0Id } from "../user/user.service";
+import { BudgetDetailIncomeItemData } from "../types/DtoTypes";
 
 const prisma = require("../connection");
 
@@ -12,11 +14,17 @@ export const getCategoryIncomes = async (idAuth0: string): Promise<CategoryIncom
   });
 };
 
-export interface CreateCategorieExpenseProps {
-  title: string;
-}
+export const getCategoryExpenseByTravelId = async ({travelId} : {travelId : number}): Promise<BudgetDetailIncomeItemData[] | null> => {
+  return prisma.categoryIncome.findMany({
+    where: {
+      travelId: travelId,
+    },
+  });
+};
 
-export const createCategoryIncome = async ({ title }: CreateCategorieExpenseProps): Promise<CategoryIncome | null> => {
+
+
+export const createCategoryIncome = async ({ title }: CreateCategoryProps): Promise<CategoryIncome | null> => {
   const {id} = await getUserByAuth0Id({idAuth0: 'auth0|64ddc45cda4837390064861d'})
   return prisma.categoryIncome
     .create({

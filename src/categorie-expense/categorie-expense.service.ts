@@ -1,4 +1,6 @@
 import { CategoryExpense } from "@prisma/client";
+import { BudgetDetailExpenseItemData } from "../types/DtoTypes";
+import { CreateCategoryProps } from "../types/Types";
 import { getUserByAuth0Id } from "../user/user.service";
 
 const prisma = require("../connection");
@@ -13,11 +15,17 @@ export const getCategoryExpenses = async (idAuth0: string): Promise<CategoryExpe
   });
 };
 
-export interface CreateCategorieExpenseProps {
-  title: string;
-}
+export const getCategoryExpenseByTravelId = async ({travelId} : {travelId : number}): Promise<BudgetDetailExpenseItemData[] | null> => {
+  return prisma.categoryExpense.findMany({
+    where: {
+      travelId: travelId,
+    },
+  });
+};
 
-export const createCategoryExpense = async ({ title }: CreateCategorieExpenseProps): Promise<CategoryExpense | null> => {
+
+
+export const createCategoryExpense = async ({ title }: CreateCategoryProps): Promise<CategoryExpense | null> => {
   const {id} = await getUserByAuth0Id({idAuth0: 'auth0|64ddc45cda4837390064861d'})
   return prisma.categoryExpense
     .create({

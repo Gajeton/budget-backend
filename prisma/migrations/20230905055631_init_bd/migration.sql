@@ -11,11 +11,25 @@ CREATE TABLE `User` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
+CREATE TABLE `Currency` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `title` VARCHAR(191) NOT NULL,
+    `symbol` VARCHAR(191) NOT NULL,
+    `code` VARCHAR(191) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
 CREATE TABLE `Travel` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
+    `currencyId` INTEGER NOT NULL,
     `creatorId` INTEGER NOT NULL,
+    `budget` DECIMAL(65, 30) NOT NULL,
+    `startDate` DATETIME(3) NOT NULL,
+    `endDate` DATETIME(3) NOT NULL,
     `month` INTEGER NOT NULL,
     `week` INTEGER NOT NULL,
     `day` INTEGER NOT NULL,
@@ -60,8 +74,6 @@ CREATE TABLE `Destination` (
 CREATE TABLE `TravelDestination` (
     `travelId` INTEGER NOT NULL,
     `destinationId` INTEGER NOT NULL,
-    `assignedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `assignedBy` VARCHAR(191) NOT NULL,
 
     PRIMARY KEY (`travelId`, `destinationId`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -71,10 +83,9 @@ CREATE TABLE `Entry` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
-    `month` INTEGER NOT NULL,
-    `week` INTEGER NOT NULL,
-    `day` INTEGER NOT NULL,
+    `date` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `amount` DECIMAL(65, 30) NOT NULL,
+    `currencyId` INTEGER NOT NULL,
     `travelId` INTEGER NOT NULL,
     `categoryExpenseId` INTEGER NOT NULL,
     `categoryIncomeId` INTEGER NOT NULL,
@@ -82,6 +93,9 @@ CREATE TABLE `Entry` (
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- AddForeignKey
+ALTER TABLE `Travel` ADD CONSTRAINT `Travel_currencyId_fkey` FOREIGN KEY (`currencyId`) REFERENCES `Currency`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Travel` ADD CONSTRAINT `Travel_creatorId_fkey` FOREIGN KEY (`creatorId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -100,6 +114,9 @@ ALTER TABLE `TravelDestination` ADD CONSTRAINT `TravelDestination_travelId_fkey`
 
 -- AddForeignKey
 ALTER TABLE `TravelDestination` ADD CONSTRAINT `TravelDestination_destinationId_fkey` FOREIGN KEY (`destinationId`) REFERENCES `Destination`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Entry` ADD CONSTRAINT `Entry_currencyId_fkey` FOREIGN KEY (`currencyId`) REFERENCES `Currency`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Entry` ADD CONSTRAINT `Entry_travelId_fkey` FOREIGN KEY (`travelId`) REFERENCES `Travel`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

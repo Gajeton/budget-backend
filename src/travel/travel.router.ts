@@ -1,43 +1,49 @@
-import express from "express";
 import type { Request, Response } from "express";
-import { body, validationResult } from "express-validator";
+import express from "express";
 
+import { CategoryExpense, CategoryIncome, Prisma } from "@prisma/client";
+import moment from "moment";
+import { GetTravels, Travel, TravelCategoryExpenseDto, TravelCategoryIncomeDto, TravelWithDestination } from "../types/DtoTypes";
 import * as TravelService from "./travel.service";
-import { Prisma } from "@prisma/client";
-import moment, { Moment } from "moment";
-import { TravelDestinationWithObject, TravelWithDestination } from "../types/Travel";
+import { param } from "express-validator";
+
 
 export const TravelRouter = express.Router();
 
-interface GetTravels {
-    destination: string[]
-    startDate: Moment,
-    endDate: Moment
-}
 
-type TravelsWithDestination = Prisma.PromiseReturnType<typeof TravelService.getTravels>
+
 
 // GET: List of all Authors
+TravelRouter.get("/getTravelById/:travelId/:creatorId", async (request: Request, response: Response) => {
+    const travelId = parseInt(request.params.travelId)
+    try {
+        const travels: Travel = await TravelService.getTravelById({ creatorId: request.params.creatorId, travelId: travelId });
+        return response.status(200).json(travels);
+    } catch (error: any) {
+        return response.status(500).json(error.message);
+    }
+});
+
 TravelRouter.get("/getTravels/:idAuth0", async (request: Request, response: Response) => {
     try {
         const travels: TravelWithDestination[] = await TravelService.getTravels(request.params.idAuth0);
         if (travels) {
             const travelsFormated: GetTravels[] = []
             travels.map(res => {
-                const travelsFormatedItem : GetTravels = {
+                const travelsFormatedItem: GetTravels = {
+                    id: 0,
                     destination: [],
                     startDate: moment(),
                     endDate: moment()
                 }
                 travelsFormatedItem.startDate = res.startDate
                 travelsFormatedItem.endDate = res.endDate
-                
+                travelsFormatedItem.id = res.id
                 res.destination.map(x => {
-                    if(x.destination) {
-                        console.log(x.destination)
+                    if (x.destination) {
                         travelsFormatedItem.destination.push(x.destination.title)
                     }
-                  
+
                 })
                 travelsFormated.push(travelsFormatedItem)
             })
@@ -64,6 +70,69 @@ TravelRouter.delete("/deleteDestination/:id", async (request: Request, response:
     try {
         const travels = await TravelService.deleteTravel(id);
         return response.status(200).json(travels);
+    } catch (error: any) {
+        return response.status(500).json(error.message);
+    }
+});
+
+TravelRouter.get("/getNumberOfMonths/:travelId/:creatorId", async (request: Request, response: Response) => {
+    const travelId: number = parseInt(request.params.travelId, 10);
+    try {
+        const travels = await TravelService.getNumberOfMonths({ creatorId: request.params.creatorIdatorId, travelId: travelId });
+        return response.status(200).json(travels);
+    } catch (error: any) {
+        return response.status(500).json(error.message);
+    }
+});
+
+TravelRouter.get("/getNumberOfWeeks/:travelId/:creatorId", async (request: Request, response: Response) => {
+    const travelId: number = parseInt(request.params.travelId, 10);
+    try {
+        const travels = await TravelService.getNumberOfMonths({ creatorId: request.params.creatorIdatorId, travelId: travelId });
+        return response.status(200).json(travels);
+    } catch (error: any) {
+        return response.status(500).json(error.message);
+    }
+});
+
+TravelRouter.get("/getNumberOfDays/:travelId/:creatorId", async (request: Request, response: Response) => {
+    const travelId: number = parseInt(request.params.travelId, 10);
+    try {
+        const travels = await TravelService.getNumberOfDays({ creatorId: request.params.creatorIdatorId, travelId: travelId });
+        return response.status(200).json(travels);
+    } catch (error: any) {
+        return response.status(500).json(error.message);
+    }
+});
+
+TravelRouter.get("/getCategoryIncomeByTravelId/:travelId", async (request: Request, response: Response) => {
+    try {
+        const categorieIncomes = await TravelService.getCategoryIncomeByTravelId({ travelId: parseInt(request.params.travelId) });
+        console.log(categorieIncomes)
+        let categoryIncomeArray: CategoryIncome[] = []
+        if (categorieIncomes && categorieIncomes.travelCategoryIncome) {
+            categorieIncomes.travelCategoryIncome.map((res : TravelCategoryIncomeDto) => {
+                categoryIncomeArray.push(res.categoryIncome)
+            })
+            return response.status(200).json(categoryIncomeArray);
+        }
+    } catch (error: any) {
+        return response.status(500).json(error.message);
+    }
+});
+
+
+
+TravelRouter.get("/getCategoryExpenseByTravelId/:travelId", async (request: Request, response: Response) => {
+    try {
+        const categoryExpenses = await TravelService.getCategoryExpenseByTravelId({ travelId: parseInt(request.params.travelId) });
+        let categoryExpenseArray: CategoryExpense[] = []
+        if (categoryExpenses && categoryExpenses.travelCategoryExpense) {
+            categoryExpenses.travelCategoryExpense.map((res : TravelCategoryExpenseDto) => {
+                categoryExpenseArray.push(res.categoryExpense)
+            })
+            return response.status(200).json(categoryExpenseArray);
+        }
     } catch (error: any) {
         return response.status(500).json(error.message);
     }

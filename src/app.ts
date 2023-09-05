@@ -7,6 +7,8 @@ import { CategoryIncomeRouter } from "./categorie-income/categorie-income.router
 import { UserRouter } from "./user/user.router";
 import { DestinationRouter } from "./destination/destination.router";
 import { TravelRouter } from "./travel/travel.router";
+import { EntryRouter } from "./entry/entry.router";
+import { CurrencyRouter } from "./currency/currency.router";
 
 dotenv.config();
 
@@ -25,7 +27,10 @@ app.use("/api/categoryIncome", CategoryIncomeRouter);
 app.use("/api/categoryExpense", CategoryExpenseRouter);
 app.use("/api/destination", DestinationRouter);
 app.use("/api/travel", TravelRouter);
+app.use("/api/entry", EntryRouter);
+app.use("/api/currency", CurrencyRouter);
 app.use("/api/user", UserRouter);
+
 
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);

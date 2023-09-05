@@ -35,3 +35,13 @@ CategoryExpenseRouter.delete("/deleteCategoryExpense/:idd", async (request: Requ
   return response.status(500).json(error.message);
 }
 });
+
+CategoryExpenseRouter.get("/getCategoryExpenseByTravelId/:travelId", async (request: Request, response: Response) => {
+  try {
+  const categorieExpenses = await CategoryExpenseService.getCategoryExpenseByTravelId({travelId : parseInt(request.params.travelId)});
+  return response.status(200).json(categorieExpenses);
+} catch (error: any) {
+  return response.status(500).json(error.message);
+}
+});
+
