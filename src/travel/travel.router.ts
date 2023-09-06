@@ -57,8 +57,13 @@ TravelRouter.get("/getTravels/:idAuth0", async (request: Request, response: Resp
 
 TravelRouter.post("/createTravel", async (request: Request, response: Response) => {
     const { ...travel } = request.body;
+    const test = { ...travel }
     try {
-        const travels = await TravelService.createTravel({ ...travel });
+        const travels = await TravelService.createTravel(test);
+        if(travels) {
+            test.categoryExpenseId.map(async (x : number) => await TravelService.createTravelCategoryExpense(x, travels.id))
+            test.categoryIncomeId.map(async (x : number) => await TravelService.createTravelCategoryIncome(x, travels.id))
+        }
         return response.status(200).json(travels);
     } catch (error: any) {
         return response.status(500).json(error.message);
@@ -108,7 +113,6 @@ TravelRouter.get("/getNumberOfDays/:travelId/:creatorId", async (request: Reques
 TravelRouter.get("/getCategoryIncomeByTravelId/:travelId", async (request: Request, response: Response) => {
     try {
         const categorieIncomes = await TravelService.getCategoryIncomeByTravelId({ travelId: parseInt(request.params.travelId) });
-        console.log(categorieIncomes)
         let categoryIncomeArray: CategoryIncome[] = []
         if (categorieIncomes && categorieIncomes.travelCategoryIncome) {
             categorieIncomes.travelCategoryIncome.map((res : TravelCategoryIncomeDto) => {
@@ -126,7 +130,7 @@ TravelRouter.get("/getCategoryIncomeByTravelId/:travelId", async (request: Reque
 TravelRouter.get("/getCategoryExpenseByTravelId/:travelId", async (request: Request, response: Response) => {
     try {
         const categoryExpenses = await TravelService.getCategoryExpenseByTravelId({ travelId: parseInt(request.params.travelId) });
-        let categoryExpenseArray: CategoryExpense[] = []
+        let categoryExpenseArray:  CategoryIncome[] =  []
         if (categoryExpenses && categoryExpenses.travelCategoryExpense) {
             categoryExpenses.travelCategoryExpense.map((res : TravelCategoryExpenseDto) => {
                 categoryExpenseArray.push(res.categoryExpense)

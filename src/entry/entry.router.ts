@@ -3,8 +3,8 @@ import express from "express";
 
 import { Prisma } from "@prisma/client";
 import moment from "moment";
-import { CreateEntryProps, EntriesWithCategoryExpenseIncome, EntryWithCategoryExpenseIncome, GetTravels, Travel, TravelWithDestination } from "../types/DtoTypes";
-
+import { BudgetDetailExpenseItemData, CreateEntryProps, EntriesWithCategoryExpenseIncome, EntryWithCategoryExpenseIncome, GetTravels, Travel, TravelWithDestination } from "../types/DtoTypes";
+const prisma = require("../connection");
 
 import * as EntryService from "./entry.service";
 export const EntryRouter = express.Router();
@@ -56,7 +56,7 @@ EntryRouter.post("/getExpensesByWeek", async (request: Request, response: Respon
     }
 });
 
-EntryRouter.post("/getExpensesByDay", async (request: Request, response: Response) => {
+EntryRouter.get("/getExpensesByDay", async (request: Request, response: Response) => {
     const { day, idAuth0 }: { day: number, idAuth0: string } = request.body;
     try {
         const entry = await EntryService.getExpensesByDay({ day: day, idAuth0: idAuth0 });
@@ -80,6 +80,31 @@ EntryRouter.post("/createEntry", async (request: Request, response: Response) =>
         return response.status(500).json(error.message);
     }
 });
+
+
+EntryRouter.get("/getEntryByCategoryExpenseAndTravelId/:categoryId/:travelId", async (request: Request, response: Response) => {
+    const  travelId : number = parseInt(request.params.travelId);
+    const  categoryId : number = parseInt(request.params.categoryId);
+    try {
+        const [entrys, total]  = await EntryService.getEntryByCategoryExpenseAndTravelId({ travelId: travelId, categoryExpenseId: categoryId });
+        
+        return response.status(200).json({data : {...entrys[0]}, total : total});
+    } catch (error: any) {
+        return response.status(500).json(error.message);
+    }
+});
+
+EntryRouter.get("/getEntryByCategoryIncomeAndTravelId/:categoryId/:travelId", async (request: Request, response: Response) => {
+    const  travelId : number = parseInt(request.params.travelId);
+    const  categoryId : number = parseInt(request.params.categoryId);
+    try {
+        const [entrys, total] = await EntryService.getEntryByCategoryIncomeAndTravelId({ travelId: travelId, categoryIncomeId: categoryId });
+        return response.status(200).json({data : {...entrys[0]}, total : total});
+    } catch (error: any) {
+        return response.status(500).json(error.message);
+    }
+});
+
 
 
 

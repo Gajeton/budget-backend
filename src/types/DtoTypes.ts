@@ -1,4 +1,4 @@
-import { CategoryExpense, CategoryIncome, Destination, TravelCategoryExpense, TravelDestination } from "@prisma/client"
+import { CategoryExpense, CategoryIncome, Destination, Entry, TravelCategoryExpense, TravelDestination } from "@prisma/client"
 import { Moment } from "moment"
 
 export type TravelWithDestination = {
@@ -23,6 +23,18 @@ export type EntriesWithCategoryExpenseIncome = {
     balanceIncome: number
 }
 
+export interface BudgetDetailExpenseItemData {
+    categoryExpenseId: number,
+    travelId: number,
+    categoryTitle: string,
+    entrysAmount: number
+
+}
+
+export interface BudgetDetailExpense {
+    data: BudgetDetailExpenseItemData
+    count: number
+}
 
 export type EntryWithCategoryExpenseIncome = {
     id: number,
@@ -31,11 +43,12 @@ export type EntryWithCategoryExpenseIncome = {
     ammount: number
 }
 
-export interface BudgetDetailExpenseItemData {
-    totalExpense: number;
-    totalEstimated : number;
-    balance: number;
-}
+// export interface BudgetDetailExpenseItemData {
+//     categoryExpenseId: number,
+//     travelId: number,
+//     categoryTitle: string,
+//     entrysAmount: number,
+// }
 
 export interface BudgetDetailIncomeItemData {
     totalExpense: number;

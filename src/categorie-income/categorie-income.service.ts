@@ -7,7 +7,7 @@ const prisma = require("../connection");
 
 export const getCategoryIncomes = async (idAuth0: string): Promise<CategoryIncome[] | null> => {
   const {id} = await getUserByAuth0Id({idAuth0: idAuth0})
-  return prisma.categoryExpense.findMany({
+  return prisma.categoryIncome.findMany({
     where: {
       creatorId: id,
     },
@@ -21,8 +21,6 @@ export const getCategoryExpenseByTravelId = async ({travelId} : {travelId : numb
     },
   });
 };
-
-
 
 export const createCategoryIncome = async ({ title }: CreateCategoryProps): Promise<CategoryIncome | null> => {
   const {id} = await getUserByAuth0Id({idAuth0: 'auth0|64ddc45cda4837390064861d'})
