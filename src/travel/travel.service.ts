@@ -9,6 +9,7 @@ const prisma = require("../connection");
 
 export const getTravels = async (idAuth0: string): Promise<TravelWithDestination[]> => {
   const { id } = await getUserByAuth0Id({ idAuth0: idAuth0 })
+  prisma.$queryRaw`SELECT distinct ent.categoryExpenseId, ent.travelId, cat.title as categoryTitle, IFNULL(sum(ent.amount),0) as entrysAmount FROM Entry ent inner join CategoryExpense cat where ent.categoryExpenseId = ${categoryExpenseId} and ent.travelId = ${travelId} LIMIT 1`,
   return prisma.travel.findMany({
     where: {
       creatorId: id,
@@ -23,6 +24,41 @@ export const getTravels = async (idAuth0: string): Promise<TravelWithDestination
     }
   });
 };
+
+export const createTravelCategoryExpense = async (categoryExpenseId: number , travelId : number): Promise<any> => {
+  return prisma.travelCategoryExpense.create({
+    data : {
+      travel: {
+        connect: {
+          id: travelId,
+        },
+      },
+      categoryExpense: {
+        connect: {
+          id: categoryExpenseId,
+        },
+      },
+    }
+  });
+};
+
+export const createTravelCategoryIncome = async (categoryIncomeId: number , travelId : number): Promise<any> => {
+  return prisma.travelCategoryIncome.create({
+    data : {
+      travel: {
+        connect: {
+          id: travelId,
+        },
+      },
+      categoryIncome: {
+        connect: {
+          id: categoryIncomeId,
+        },
+      },
+    }
+  });
+};
+
 
 
 
@@ -52,7 +88,7 @@ export const createTravel = async ({ ...data }: CreateTravelProps): Promise<Trav
           create: {
             destinationId: data.destinationId
           }
-        }
+        },
       },
     })
 };
@@ -122,7 +158,6 @@ export const getCategoryExpenseByTravelId = async ({travelId} : {travelId : numb
       id: travelId,
     },
     include: {
-      // Include posts
       travelCategoryExpense : {
         include: {
           categoryExpense: true, // Include post categories
@@ -133,12 +168,12 @@ export const getCategoryExpenseByTravelId = async ({travelId} : {travelId : numb
 };
 
 export const getCategoryIncomeByTravelId = async ({travelId} : {travelId : number}): Promise<BudgetDetailIncomeData | null> => {
-  return prisma.travel.findMany({
+  return prisma.travel.findFirst({
     where: {
       id: travelId,
     },
     include: {
-      // Include posts
+      entry : true,
       travelCategoryIncome : {
         include: {
           categoryIncome: true, // Include post categories
