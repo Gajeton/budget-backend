@@ -1,10 +1,6 @@
 
+import { EntryWithCategoryExpenseIncome } from "../types/Types";
 import { getUserByAuth0Id } from "../user/user.service";
-
-import { TravelMonth, TravelWithDestination, Travel, EntryWithCategoryExpenseIncome, CreateEntryProps, BudgetDetailExpense } from "../types/DtoTypes";
-import { CreateTravelProps, GetProps } from "../types/Types";
-import { CategoryIncome, Entry } from "@prisma/client";
-import moment from "moment";
 
 const prisma = require("../connection");
 
@@ -109,7 +105,6 @@ export const createEntryIncome = async ({ idAuth0, categorieExpenseId, categorie
     }
   })
 };
-
 
 export const getEntryByCategoryExpenseAndTravelId = async ({ travelId, categoryExpenseId }: { travelId: number, categoryExpenseId: number }): Promise<any[]> => {
   return prisma.$transaction([

@@ -1,12 +1,11 @@
 import type { Request, Response } from "express";
 import express from "express";
 
-import { Prisma } from "@prisma/client";
-import moment from "moment";
-import { BudgetDetailExpenseItemData, CreateEntryProps, EntriesWithCategoryExpenseIncome, EntryWithCategoryExpenseIncome, GetTravels, Travel, TravelWithDestination } from "../types/DtoTypes";
+
 const prisma = require("../connection");
 
 import * as EntryService from "./entry.service";
+import { CreateEntryProps } from "../types/Types";
 export const EntryRouter = express.Router();
 
 EntryRouter.post("/getExpensesByMonth", async (request: Request, response: Response) => {
@@ -80,7 +79,6 @@ EntryRouter.post("/createEntry", async (request: Request, response: Response) =>
         return response.status(500).json(error.message);
     }
 });
-
 
 EntryRouter.get("/getEntryByCategoryExpenseAndTravelId/:categoryId/:travelId", async (request: Request, response: Response) => {
     const  travelId : number = parseInt(request.params.travelId);
