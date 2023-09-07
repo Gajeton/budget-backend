@@ -1,5 +1,5 @@
 
-import { EntryWithCategoryExpenseIncome } from "../types/Types";
+import { CreateEntryProps, EntryWithCategoryExpenseIncome } from "../types/Types";
 import { getUserByAuth0Id } from "../user/user.service";
 
 const prisma = require("../connection");
