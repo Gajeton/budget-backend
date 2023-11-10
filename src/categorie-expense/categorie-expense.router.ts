@@ -6,17 +6,8 @@ import * as CategoryExpenseService from "./categorie-expense.service";
 
 export const CategoryExpenseRouter = express.Router();
 
-// GET: List of expenses categorie
-CategoryExpenseRouter.get("/getCategoryExpenses/:idAuth0", async (request: Request, response: Response) => {
-    try {
-    const categorieExpenses = await CategoryExpenseService.getCategoryExpenses(request.params.idAuth0);
-    return response.status(200).json(categorieExpenses);
-  } catch (error: any) {
-    return response.status(500).json(error.message);
-  }
-});
 
-CategoryExpenseRouter.post("/createCategoryExpense", async (request: Request, response: Response) => {
+CategoryExpenseRouter.post("/create_category_expense", async (request: Request, response: Response) => {
   const { title } = request.body;
   try {
   const categorieExpenses = await CategoryExpenseService.createCategoryExpense({title : title});
@@ -26,19 +17,10 @@ CategoryExpenseRouter.post("/createCategoryExpense", async (request: Request, re
 }
 });
 
-CategoryExpenseRouter.delete("/deleteCategoryExpense/:idd", async (request: Request, response: Response) => {
-  const id: number = parseInt(request.params.idd, 10);
+CategoryExpenseRouter.delete("/delete_category_expense/:id", async (request: Request, response: Response) => {
+  const id: number = parseInt(request.params.id, 10);
   try {
   const categorieExpenses = await CategoryExpenseService.deleteCategoryExpense(id);
-  return response.status(200).json(categorieExpenses);
-} catch (error: any) {
-  return response.status(500).json(error.message);
-}
-});
-
-CategoryExpenseRouter.get("/getCategoryExpenseByTravelId/:travelId", async (request: Request, response: Response) => {
-  try {
-  const categorieExpenses = await CategoryExpenseService.getCategoryExpenseByTravelId({travelId : parseInt(request.params.travelId)});
   return response.status(200).json(categorieExpenses);
 } catch (error: any) {
   return response.status(500).json(error.message);

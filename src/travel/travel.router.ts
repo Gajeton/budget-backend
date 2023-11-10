@@ -6,8 +6,17 @@ import * as TravelService from "./travel.service";
 
 export const TravelRouter = express.Router();
 
-// GET: List of all Authors
-TravelRouter.get("/getTravelById/:travelId/:creatorId", async (request: Request, response: Response) => {
+TravelRouter.get("/", async (request: Request, response: Response) => {
+    try {
+        const travels = await TravelService.getTravels();
+        const travelsJson = JSON.stringify(travels, (_, v) => typeof v === 'bigint' ? parseFloat(v.toString()) : v)
+        return response.status(200).send(travelsJson)
+    } catch (error: any) {
+        return response.status(500).json(error.message);
+    }
+});
+
+TravelRouter.get("/:travelId", async (request: Request, response: Response) => {
     const travelId = parseInt(request.params.travelId)
     try {
         const travel: any = await TravelService.getTravelById(travelId);
@@ -17,7 +26,7 @@ TravelRouter.get("/getTravelById/:travelId/:creatorId", async (request: Request,
     }
 });
 
-TravelRouter.get("/getTravelDetailById/:travelId", async (request: Request, response: Response) => {
+TravelRouter.get("/travel_detail/:travelId", async (request: Request, response: Response) => {
     const travelId = parseInt(request.params.travelId)
     try {
         const travel: any = await TravelService.getTravelDetailById(travelId);
@@ -29,16 +38,7 @@ TravelRouter.get("/getTravelDetailById/:travelId", async (request: Request, resp
     }
 });
 
-TravelRouter.get("/getTravels/:idAuth0", async (request: Request, response: Response) => {
-    try {
-        const travels = await TravelService.getTravels(request.params.idAuth0);
-        return response.status(200).send(travels)
-    } catch (error: any) {
-        return response.status(500).json(error.message);
-    }
-});
-
-TravelRouter.post("/createTravel", async (request: Request, response: Response) => {
+TravelRouter.post("/create_travel", async (request: Request, response: Response) => {
     const { ...travel } = request.body;
     const travelToCreate = { ...travel }
     try {
@@ -53,7 +53,7 @@ TravelRouter.post("/createTravel", async (request: Request, response: Response) 
     }
 });
 
-TravelRouter.get("/getCategoryIncomeByTravelId/:travelId", async (request: Request, response: Response) => {
+TravelRouter.get("/category_income/:travelId", async (request: Request, response: Response) => {
     try {
         const categoryIncomes = await TravelService.getCategoryIncomeByTravelId({ travelId: parseInt(request.params.travelId) });
         const categoryIncomesJson = JSON.stringify(categoryIncomes, (_, v) => typeof v === 'bigint' ? parseFloat(v.toString()) : v)
@@ -64,7 +64,7 @@ TravelRouter.get("/getCategoryIncomeByTravelId/:travelId", async (request: Reque
     }
 });
 
-TravelRouter.get("/getCategoryExpenseByTravelId/:travelId", async (request: Request, response: Response) => {
+TravelRouter.get("/category_expense/:travelId", async (request: Request, response: Response) => {
     try {
         const categoryExpenses = await TravelService.getCategoryExpenseByTravelId({ travelId: parseInt(request.params.travelId) });
         console.log(categoryExpenses)
@@ -76,7 +76,7 @@ TravelRouter.get("/getCategoryExpenseByTravelId/:travelId", async (request: Requ
     }
 });
 
-TravelRouter.get("/getNumberOfWeeks/:travelId/:creatorId", async (request: Request, response: Response) => {
+TravelRouter.get("/number_of_weeks/:travelId", async (request: Request, response: Response) => {
     const travelId: number = parseInt(request.params.travelId, 10);
     try {
         const travels = await TravelService.getNumberOfWeeks({ creatorId: request.params.creatorIdatorId, travelId: travelId });

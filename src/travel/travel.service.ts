@@ -1,16 +1,15 @@
 
+import { CreateTravelProps, GetProps } from "../types/PropsType";
+import { CategoryExpenseByTravelIdType, CategoryIncomeByTravelIdType, GetTravelByIdType, GetTravelDetailByIdType, GetTravelsType, TravelMonthType, TravelWeekType } from "../types/Types";
 import { getUserByAuth0Id } from "../user/user.service";
 
 import { CategoryIncome, Travel } from "@prisma/client";
 
-import { CategoryExpenseByTravelIdType, CategoryIncomeByTravelIdType, CreateTravelProps, GetProps, GetTravelByIdType, GetTravelDetailByIdType, GetTravelsType, TravelMonthType, TravelWeekType } from "../types/Types";
 
 const prisma = require("../connection");
 
-export const getTravels = async (idAuth0: string): Promise<GetTravelsType[]> => {
-  return prisma.$transaction[(
-    prisma.$queryRaw`SELECT  tra.id, tra.startDate, tra.endDate, IFNULL(count(ci.id),0) as totalIncome , IFNULL(count(ce.id),0) as totalExpense, (select title FROM Destination d inner join TravelDestination td on td.destinationId = d.id  inner join Travel tra1 on td.travelId = tra1.id LIMIT 1) as destination  FROM Travel tra LEFT join Entry ent ON ent.travelId = tra.id left join CategoryExpense ce on ent.categoryExpenseId = ce.id left join CategoryIncome ci on ent.categoryIncomeId = ci.id  GROUP BY tra.id LIMIT 10 offset 10`
-  )] 
+export const getTravels = async (): Promise<GetTravelsType[]> => {
+  return prisma.$queryRaw`SELECT  tra.id, tra.startDate, tra.endDate, IFNULL(count(ci.id),0) as totalIncome , IFNULL(count(ce.id),0) as totalExpense, (select title FROM Destination d inner join TravelDestination td on td.destinationId = d.id  inner join Travel tra1 on td.travelId = tra1.id LIMIT 1) as destination  FROM Travel tra LEFT join Entry ent ON ent.travelId = tra.id left join CategoryExpense ce on ent.categoryExpenseId = ce.id left join CategoryIncome ci on ent.categoryIncomeId = ci.id  GROUP BY tra.id LIMIT 10 offset 10`
 };
 
 export const createTravelCategoryExpense = async (categoryExpenseId: number , travelId : number): Promise<Travel> => {

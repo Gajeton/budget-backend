@@ -1,6 +1,7 @@
 import { CategoryIncome } from "@prisma/client";
-import { BudgetDetailIncomeItemData, CreateCategoryProps } from "../types/Types";
 import { getUserByAuth0Id } from "../user/user.service";
+import { BudgetDetailIncomeItemData } from "../types/Types";
+import { CreateCategoryProps } from "../types/PropsType";
 
 
 const prisma = require("../connection");

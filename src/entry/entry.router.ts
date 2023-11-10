@@ -5,67 +5,41 @@ import express from "express";
 const prisma = require("../connection");
 
 import * as EntryService from "./entry.service";
-import { CreateEntryProps } from "../types/Types";
+import { CreateEntryProps } from "../types/PropsType";
+
 export const EntryRouter = express.Router();
 
-EntryRouter.post("/getExpensesByMonth", async (request: Request, response: Response) => {
+EntryRouter.post("/entries_month", async (request: Request, response: Response) => {
     const { week, idAuth0 }: { week: number, idAuth0: string } = request.body;
     try {
-        const entry = await EntryService.getExpensesByMonth({ month: week, idAuth0: idAuth0 });
-        // if (entry) {
-        //     const entrysFormated: EntriesWithCategoryExpenseIncome[] = []
-        //     entry.map(res => {
-        //         const entrysFormated: EntriesWithCategoryExpenseIncome = {
-        //             data: null,
-        //             nbTotal: 0,
-        //             nbExpense: 0,
-        //             nbIncome: 0,
-        //             total: 0,
-        //             totalExpense: 0,
-        //             totalIncome: 0,
-        //             balanceIncome: 0
-        //         }
-        //         entrysFormated.data = entry
-        //         entrysFormated.nbTotal = res.categoryExpense
-        //         entrysFormated.nbExpense = data.count()
-        //         res.destination.map(x => {
-        //             if (x.destination) {
-        //                 console.log(x.destination)
-        //                 travelsFormatedItem.destination.push(x.destination.title)
-        //             }
-
-        //         })
-        //         travelsFormated.push(travelsFormatedItem)
-        //     })
-
-        // }
+        const entry = await EntryService.getExpensesByMonth({ type: week, idAuth0: idAuth0 });
         return response.status(200).json();
     } catch (error: any) {
         return response.status(500).json(error.message);
     }
 });
 
-EntryRouter.post("/getExpensesByWeek", async (request: Request, response: Response) => {
+EntryRouter.post("/entries_week", async (request: Request, response: Response) => {
     const { week, idAuth0 }: { week: number, idAuth0: string } = request.body;
     try {
-        const entry = await EntryService.getExpensesByWeek({ week: week, idAuth0: idAuth0 });
+        const entry = await EntryService.getExpensesByWeek({ type: week, idAuth0: idAuth0 });
         return response.status(200).json(entry);
     } catch (error: any) {
         return response.status(500).json(error.message);
     }
 });
 
-EntryRouter.get("/getExpensesByDay", async (request: Request, response: Response) => {
+EntryRouter.get("/entries_day", async (request: Request, response: Response) => {
     const { day, idAuth0 }: { day: number, idAuth0: string } = request.body;
     try {
-        const entry = await EntryService.getExpensesByDay({ day: day, idAuth0: idAuth0 });
+        const entry = await EntryService.getExpensesByDay({ type: day, idAuth0: idAuth0 });
         return response.status(200).json(entry);
     } catch (error: any) {
         return response.status(500).json(error.message);
     }
 });
 
-EntryRouter.post("/createEntry", async (request: Request, response: Response) => {
+EntryRouter.post("/create_entry", async (request: Request, response: Response) => {
     const { idAuth0, categorieExpenseId, categorieIncomeId, title, date, amount, travelId, currencyId }: CreateEntryProps = request.body
     let entry = null
     try {
@@ -80,7 +54,7 @@ EntryRouter.post("/createEntry", async (request: Request, response: Response) =>
     }
 });
 
-EntryRouter.get("/getEntryByCategoryExpenseAndTravelId/:categoryId/:travelId", async (request: Request, response: Response) => {
+EntryRouter.get("/entry_category_expenses/:categoryId/:travelId", async (request: Request, response: Response) => {
     const  travelId : number = parseInt(request.params.travelId);
     const  categoryId : number = parseInt(request.params.categoryId);
     try {
@@ -92,7 +66,7 @@ EntryRouter.get("/getEntryByCategoryExpenseAndTravelId/:categoryId/:travelId", a
     }
 });
 
-EntryRouter.get("/getEntryByCategoryIncomeAndTravelId/:categoryId/:travelId", async (request: Request, response: Response) => {
+EntryRouter.get("/entry_category_income/:categoryId/:travelId", async (request: Request, response: Response) => {
     const  travelId : number = parseInt(request.params.travelId);
     const  categoryId : number = parseInt(request.params.categoryId);
     try {

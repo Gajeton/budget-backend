@@ -1,5 +1,6 @@
 import { User } from "@prisma/client";
-import { UserProps } from "../types/Types";
+import { UserProps } from "../types/PropsType";
+
 
 const prisma = require("../connection");
 

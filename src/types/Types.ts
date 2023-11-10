@@ -2,31 +2,6 @@ import { CategoryExpense, CategoryIncome, Destination } from "@prisma/client";
 import { Decimal } from "@prisma/client/runtime/library";
 import { Moment } from "moment";
 
-export interface GetProps {
-    travelId: number,
-    creatorId: string
-}
-
-export interface CreateCategoryProps {
-    title: string;
-}
-
-export interface UserProps {
-    idAuth0: string,
-    name?: string
-}
-
-export interface CreateTravelProps {
-    destinationId: number;
-    idAuth0: string
-    currencyId: string
-    startDate: Moment
-    endDate: Moment
-    month: number
-    week: number
-    day: number
-    budget: number
-}
 
 export interface BudgetDetailExpenseItemData {
     categoryExpenseId: number,
@@ -74,7 +49,8 @@ export type CategoryIncomeByTravelIdType = {
     id: number,
     travelId: number,
     categoryTitle: string
-    entrysAmount: bigint
+    entrysAmount: bigint,
+    countEntrys: number
 }
 
 export type CategoryExpenseByTravelIdType = {
@@ -82,7 +58,8 @@ export type CategoryExpenseByTravelIdType = {
     id: number,
     travelId: number,
     categoryTitle: string
-    entrysAmount: bigint
+    entrysAmount: bigint,
+    countEntrys: number
 }
 
 export type GetTravelByIdType = {
@@ -113,13 +90,3 @@ export type GetTravelsType = {
     destination: string
 }
 
-export interface CreateEntryProps {
-    amount: number
-    idAuth0: string
-    currencyId: number
-    date: Moment
-    title: string
-    categorieExpenseId?: number
-    categorieIncomeId?: number
-    travelId: number
-}

@@ -23,13 +23,13 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.use("/api/categoryIncome", CategoryIncomeRouter);
-app.use("/api/categoryExpense", CategoryExpenseRouter);
-app.use("/api/destination", DestinationRouter);
-app.use("/api/travel", TravelRouter);
-app.use("/api/entry", EntryRouter);
-app.use("/api/currency", CurrencyRouter);
-app.use("/api/user", UserRouter);
+app.use("/api/categoryIncomes", CategoryIncomeRouter);
+app.use("/api/categoryExpenses", CategoryExpenseRouter);
+app.use("/api/destinations", DestinationRouter);
+app.use("/api/travels", TravelRouter);
+app.use("/api/entries", EntryRouter);
+app.use("/api/currencies", CurrencyRouter);
+app.use("/api/users", UserRouter);
 
 
 app.listen(PORT, () => {

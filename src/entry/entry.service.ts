@@ -1,10 +1,13 @@
 
-import { CreateEntryProps, EntryWithCategoryExpenseIncome } from "../types/Types";
+import { CreateEntryProps, GetEntryByCategoryExpenseAndTravelIdProps, GetEntryByCategoryIncomeAndTravelIdProps, GetExpensesByProps } from "../types/PropsType";
+import { EntryWithCategoryExpenseIncome } from "../types/Types";
 import { getUserByAuth0Id } from "../user/user.service";
 
 const prisma = require("../connection");
 
-export const getExpensesByMonth = async ({ month: month, idAuth0: idAuth0 }: { month: number, idAuth0: string }): Promise<EntryWithCategoryExpenseIncome[]> => {
+
+
+export const getExpensesByMonth = async ({ type: month, idAuth0: idAuth0 }: GetExpensesByProps): Promise<EntryWithCategoryExpenseIncome[]> => {
   const { id } = await getUserByAuth0Id({ idAuth0: idAuth0 })
   return prisma.entry.findMany({
     where: {
@@ -22,7 +25,7 @@ export const getExpensesByMonth = async ({ month: month, idAuth0: idAuth0 }: { m
   });
 };
 
-export const getExpensesByWeek = async ({ week: week, idAuth0: idAuth0 }: { week: number, idAuth0: string }): Promise<EntryWithCategoryExpenseIncome[]> => {
+export const getExpensesByWeek = async ({ type: week, idAuth0: idAuth0 }: GetExpensesByProps): Promise<EntryWithCategoryExpenseIncome[]> => {
   const { id } = await getUserByAuth0Id({ idAuth0: idAuth0 })
   return prisma.entry.findMany({
     where: {
@@ -35,7 +38,7 @@ export const getExpensesByWeek = async ({ week: week, idAuth0: idAuth0 }: { week
   });
 };
 
-export const getExpensesByDay = async ({ day: day, idAuth0: idAuth0 }: { day: number, idAuth0: string }): Promise<EntryWithCategoryExpenseIncome[]> => {
+export const getExpensesByDay = async ({ type: day, idAuth0: idAuth0 }: GetExpensesByProps): Promise<EntryWithCategoryExpenseIncome[]> => {
   const { id } = await getUserByAuth0Id({ idAuth0: idAuth0 })
   return prisma.entry.findMany({
     where: {
@@ -106,7 +109,7 @@ export const createEntryIncome = async ({ idAuth0, categorieExpenseId, categorie
   })
 };
 
-export const getEntryByCategoryExpenseAndTravelId = async ({ travelId, categoryExpenseId }: { travelId: number, categoryExpenseId: number }): Promise<any[]> => {
+export const getEntryByCategoryExpenseAndTravelId = async ({ travelId, categoryExpenseId }: GetEntryByCategoryExpenseAndTravelIdProps): Promise<any[]> => {
   return prisma.$transaction([
     prisma.$queryRaw`SELECT distinct ent.categoryExpenseId, ent.travelId, cat.title as categoryTitle, IFNULL(sum(ent.amount),0) as entrysAmount FROM Entry ent inner join CategoryExpense cat where ent.categoryExpenseId = ${categoryExpenseId} and ent.travelId = ${travelId} LIMIT 1`,
     prisma.entry.count({
@@ -118,7 +121,7 @@ export const getEntryByCategoryExpenseAndTravelId = async ({ travelId, categoryE
 ])
 };
 
-export const getEntryByCategoryIncomeAndTravelId = async ({ travelId, categoryIncomeId }: { travelId: number, categoryIncomeId: number }): Promise<any[]> => {
+export const getEntryByCategoryIncomeAndTravelId = async ({ travelId, categoryIncomeId }: GetEntryByCategoryIncomeAndTravelIdProps): Promise<any[]> => {
   return prisma.$transaction([
     prisma.$queryRaw`SELECT distinct ent.categoryIncomeId, ent.travelId, cat.title as categoryTitle, IFNULL(sum(ent.amount),0) as entrysAmount FROM Entry ent inner join CategoryIncome cat where ent.categoryIncomeId = ${categoryIncomeId} and ent.travelId = ${travelId} LIMIT 1`,
     prisma.entry.count({

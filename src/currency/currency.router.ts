@@ -4,7 +4,7 @@ import express from "express";
 import * as CurrencyService from "./currency.service";
 export const CurrencyRouter = express.Router();
 
-CurrencyRouter.get("/getCurrencies", async (request: Request, response: Response) => {
+CurrencyRouter.get("/", async (request: Request, response: Response) => {
     try {
         const currencies = await CurrencyService.getCurrencies();
         return response.status(200).json(currencies);
